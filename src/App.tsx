@@ -1,6 +1,6 @@
-import { StoreLinksLab } from "@/components/store-links-lab";
+import { StoreLinksLab } from "./components/store-links-lab";
 
-export default function Home() {
+export function App() {
   return (
     <main className="shell">
       <header className="topbar">
@@ -14,7 +14,7 @@ export default function Home() {
       <section className="hero" id="top">
         <p className="eyebrow"><span /> Open interface primitives</p>
         <h1>Small pieces.<br />Native to the web.</h1>
-        <p className="hero__copy">Reusable UI components designed around context rather than screenshots: theme, platform, input, accessibility, and motion.</p>
+        <p className="hero__copy">Reusable UI components designed around context rather than screenshots: theme, platform, input, accessibility, motion, and rendering environment.</p>
       </section>
 
       <StoreLinksLab />
