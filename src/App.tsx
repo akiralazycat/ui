@@ -1,4 +1,4 @@
-import { StoreLinksLab } from "./components/store-links-lab";
+import { AvailabilityLab } from "./components/availability-lab";
 
 export function App() {
   return (
@@ -6,7 +6,7 @@ export function App() {
       <header className="topbar">
         <a className="brand" href="#top" aria-label="UI home">UI</a>
         <nav aria-label="Primary navigation">
-          <a href="#store-links">Components</a>
+          <a href="#availability">Components</a>
           <a href="https://github.com/akiralazycat/ui" target="_blank" rel="noreferrer">GitHub ↗</a>
         </nav>
       </header>
@@ -14,10 +14,10 @@ export function App() {
       <section className="hero" id="top">
         <p className="eyebrow"><span /> Open interface primitives</p>
         <h1>Small pieces.<br />Native to the web.</h1>
-        <p className="hero__copy">Reusable UI components designed around context rather than screenshots: theme, platform, input, accessibility, motion, and rendering environment.</p>
+        <p className="hero__copy">Reusable UI components designed around context rather than screenshots: theme, platform, distribution, region, accessibility, motion, and rendering environment.</p>
       </section>
 
-      <StoreLinksLab />
+      <AvailabilityLab />
 
       <footer>
         <strong>UI</strong>
