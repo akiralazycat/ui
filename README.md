@@ -36,6 +36,7 @@ const targets = [
   theme="auto"
   mode="adaptive"
   presentation="platform"
+  markStrategy="neutral"
 />
 ```
 
@@ -53,6 +54,32 @@ const targets = [
 
 This is useful for universal store records: one App Store button can advertise iOS · iPadOS · macOS · watchOS · tvOS · visionOS without duplicating the same URL six times.
 
+## Mark strategy
+
+Platform/store identity is always carried by visible text. Marks are decorative assistance, not the only identifier.
+
+- `markStrategy="neutral"` — default. Platform presentation uses a neutral device-family glyph; store presentation uses a neutral store glyph.
+- `markStrategy="custom"` — use target-level `platformMark` / `distributionMark` or the component-level `renderMark` callback. Missing custom artwork falls back to the neutral mark.
+- `markStrategy="none"` — text-only rendering.
+
+There is deliberately no `brand` strategy. The library does not decide whether a vendor logo is licensed for a given product, territory, placement, or campaign.
+
+```tsx
+<Availability
+  targets={targets}
+  markStrategy="custom"
+  renderMark={({ presentation, distribution, platforms }) => {
+    // Return artwork that your product is permitted to use.
+    // `presentation`, `distribution`, and `platforms` can drive your own map.
+    return myApprovedMarks[presentation === "store" ? distribution : platforms[0]];
+  }}
+/>
+```
+
+Custom artwork is automatically placed inside the component's decorative mark frame (`aria-hidden`); the visible platform/store label remains the accessible identifier.
+
+See [BRAND_ASSETS.md](./BRAND_ASSETS.md) for the integration policy. Custom slots are a technical extension point, not a grant of rights to third-party artwork. Official store badges should be used as intact owner-provided assets when their current rules require that treatment rather than being reconstructed inside the neutral pill.
+
 ## Rendering contract
 
 Automatic detection is best-effort and client-side. Before hydration, all available targets render in a stable structure. `adaptive` changes priority after detection; `current` changes visibility only after hydration. Hosts that already know the request platform can pass `initialPlatform` to start in the resolved state.
@@ -64,6 +91,12 @@ visionOS, watch, TV, embedded, and privacy-reduced user agents should not be ass
 `platformRegistry` and `distributionRegistry` contain common presets, but IDs are extensible strings. New regional stores or future operating systems can therefore be used immediately without waiting for a library release. Unknown IDs receive a readable fallback label and neutral rendering.
 
 The built-in distribution registry includes both global and regional channels, including App Store, Google Play, Microsoft Store, Galaxy Store, AppGallery, Xiaomi GetApps, OPPO App Market, vivo App Store, Tencent MyApp, Amazon Appstore, Flathub, Snap Store, and F-Droid.
+
+## Neutral mark set
+
+The bundled visual vocabulary is device-first rather than vendor-first: phone, tablet, desktop, watch, TV, spatial, car, web, plus a generic store mark. The same device glyph can intentionally appear beside different operating-system names. The glyph answers “what kind of device?”, while the text answers “which platform?”.
+
+`NeutralDeviceMark` and `NeutralStoreMark` are exported for consumers that need the same visual language elsewhere.
 
 ## StoreLinks compatibility wrapper
 
@@ -77,11 +110,11 @@ The built-in distribution registry includes both global and regional channels, i
 />
 ```
 
-## Theme and brand assets
+If `iosMark` or `androidMark` is supplied, `StoreLinks` automatically uses the custom mark strategy unless `markStrategy` is explicitly set.
+
+## Theme
 
 Light surfaces use a dark CTA; dark surfaces use a light CTA. Brand color is not used as the button background by default.
-
-This project does not bundle Apple, Google, Microsoft, Huawei, Xiaomi, Samsung, Amazon, or other vendor logos or store badges. The renderer ships neutral device/store marks. Integrations can provide approved artwork through target-level `platformMark` or `distributionMark` slots.
 
 ## Hosting and framework policy
 

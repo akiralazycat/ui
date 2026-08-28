@@ -1,8 +1,10 @@
 import type { ReactNode } from "react";
 import {
   Availability,
+  type AvailabilityMarkStrategy,
   type AvailabilityMode,
   type AvailabilityPresentation,
+  type AvailabilityTarget,
   type AvailabilityTheme,
 } from "./availability";
 import type { DetectedPlatform } from "../lib/platform";
@@ -17,6 +19,7 @@ export type StoreLinksProps = {
   platform?: StoreLinksPlatform;
   mode?: AvailabilityMode;
   presentation?: AvailabilityPresentation;
+  markStrategy?: AvailabilityMarkStrategy;
   initialPlatform?: DetectedPlatform;
   iosLabel?: string;
   androidLabel?: string;
@@ -35,6 +38,7 @@ export function StoreLinks({
   platform = "auto",
   mode = "adaptive",
   presentation = "platform",
+  markStrategy,
   initialPlatform,
   iosLabel = "iOS",
   androidLabel = "Android",
@@ -45,11 +49,11 @@ export function StoreLinks({
   className,
   onPlatformResolved,
 }: StoreLinksProps) {
-  const targets = [
+  const targets: AvailabilityTarget[] = [
     iosUrl && platform !== "android"
       ? {
-          platform: "ios" as const,
-          distribution: "app-store" as const,
+          platform: "ios",
+          distribution: "app-store",
           url: iosUrl,
           label: iosLabel,
           ariaLabel: iosAriaLabel,
@@ -59,8 +63,8 @@ export function StoreLinks({
       : null,
     androidUrl && platform !== "ios"
       ? {
-          platform: "android" as const,
-          distribution: "google-play" as const,
+          platform: "android",
+          distribution: "google-play",
           url: androidUrl,
           label: androidLabel,
           ariaLabel: androidAriaLabel,
@@ -68,9 +72,10 @@ export function StoreLinks({
           distributionMark: androidMark,
         }
       : null,
-  ].filter(Boolean) as NonNullable<Parameters<typeof Availability>[0]["targets"]>[number][];
+  ].filter((target): target is AvailabilityTarget => target !== null);
 
   const effectiveMode = platform === "all" ? "all" : platform === "auto" ? mode : "all";
+  const effectiveMarkStrategy = markStrategy ?? (iosMark || androidMark ? "custom" : "neutral");
 
   return (
     <Availability
@@ -78,6 +83,7 @@ export function StoreLinks({
       theme={theme}
       mode={effectiveMode}
       presentation={presentation}
+      markStrategy={effectiveMarkStrategy}
       initialPlatform={initialPlatform}
       className={["store-links", className].filter(Boolean).join(" ")}
       onPlatformResolved={onPlatformResolved}
