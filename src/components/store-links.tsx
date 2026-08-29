@@ -30,6 +30,7 @@ export type StoreLinksProps = {
   appStoreMark?: ReactNode;
   googlePlayMark?: ReactNode;
   className?: string;
+  ariaLabel?: string;
   openInNewTab?: boolean;
   onPlatformResolved?: (platform: DetectedPlatform) => void;
 };
@@ -45,13 +46,14 @@ export function StoreLinks({
   platformHint,
   iosLabel = "iOS",
   androidLabel = "Android",
-  iosAriaLabel = "Open iOS app download page",
-  androidAriaLabel = "Open Android app download page",
+  iosAriaLabel,
+  androidAriaLabel,
   iosMark,
   androidMark,
   appStoreMark,
   googlePlayMark,
   className,
+  ariaLabel,
   openInNewTab = false,
   onPlatformResolved,
 }: StoreLinksProps) {
@@ -94,6 +96,7 @@ export function StoreLinks({
       markStrategy={effectiveMarkStrategy}
       platformHint={platformHint}
       className={["store-links", className].filter(Boolean).join(" ")}
+      ariaLabel={ariaLabel}
       openInNewTab={openInNewTab}
       onPlatformResolved={onPlatformResolved}
     />

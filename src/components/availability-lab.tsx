@@ -32,6 +32,30 @@ const demoTargets: AvailabilityTarget[] = [
   { platform: "web", distribution: "web", url: "https://example.com/app" },
 ];
 
+const mobileTargets: AvailabilityTarget[] = [
+  { platform: "ios", distribution: "app-store", url: appleUniversal },
+  { platform: "android", distribution: "google-play", url: googlePlay },
+];
+
+const crossPlatformTargets: AvailabilityTarget[] = [
+  { platform: "ios", distribution: "app-store", url: appleUniversal },
+  { platform: "macos", distribution: "app-store", url: appleUniversal },
+  { platform: "visionos", distribution: "app-store", url: appleUniversal },
+  { platform: "android", distribution: "google-play", url: googlePlay },
+  { platform: "windows", distribution: "microsoft-store", url: "https://apps.microsoft.com/" },
+  { platform: "linux", distribution: "flathub", url: "https://flathub.org/" },
+];
+
+const globalDistributionTargets: AvailabilityTarget[] = [
+  { platform: "ios", distribution: "app-store", url: appleUniversal },
+  { platform: "android", distribution: "google-play", url: googlePlay },
+  { platform: "harmonyos", distribution: "appgallery", url: "https://appgallery.huawei.com/", regions: ["CN"] },
+  { platform: "android", distribution: "getapps", url: "https://global.developer.mi.com/", regions: ["CN"] },
+  { platform: "linux", distribution: "flathub", url: "https://flathub.org/" },
+  { platform: "windows", distribution: "direct", url: "https://example.com/download/windows" },
+  { platform: "web", distribution: "web", url: "https://example.com/app" },
+];
+
 const deviceSamples: readonly { device: DeviceFamily; label: string }[] = [
   { device: "phone", label: "Phone" },
   { device: "tablet", label: "Tablet" },
@@ -98,6 +122,7 @@ export function AvailabilityLab() {
               markStrategy={markStrategy}
               renderMark={DemoCustomMark}
               region={region === "all" ? undefined : region}
+              ariaLabel="Availability preview"
               onPlatformResolved={setResolved}
             />
           </div>
@@ -177,6 +202,34 @@ export function AvailabilityLab() {
         <article><span>C</span><h3>Neutral by default.</h3><p>Device/distribution glyphs are bundled. Custom marks are an integration hook, not a license or a bundled brand-asset catalog.</p></article>
       </div>
 
+      <section className="pattern-lab" aria-labelledby="pattern-lab-title">
+        <div className="pattern-lab__intro">
+          <p className="eyebrow">Usage patterns</p>
+          <h3 id="pattern-lab-title">Three real shapes.</h3>
+          <p>The same primitive should stay legible when it is a two-platform CTA, a broad compatibility announcement, or a multi-region distribution surface.</p>
+        </div>
+        <div className="pattern-grid">
+          <article className="pattern-card">
+            <span className="pattern-card__index">A</span>
+            <h4>Mobile app</h4>
+            <p>Equal iOS and Android availability.</p>
+            <Availability targets={mobileTargets} mode="all" ariaLabel="Mobile app availability" />
+          </article>
+          <article className="pattern-card">
+            <span className="pattern-card__index">B</span>
+            <h4>Cross-platform</h4>
+            <p>Announce phone, spatial, and desktop support together.</p>
+            <Availability targets={crossPlatformTargets} mode="all" ariaLabel="Cross-platform availability" />
+          </article>
+          <article className="pattern-card">
+            <span className="pattern-card__index">C</span>
+            <h4>Global distribution</h4>
+            <p>Show stores, direct download, web, and regional channels as distribution.</p>
+            <Availability targets={globalDistributionTargets} mode="all" presentation="distribution" ariaLabel="Global distribution channels" />
+          </article>
+        </div>
+      </section>
+
       <section className="mark-lab" aria-labelledby="mark-lab-title">
         <div className="mark-lab__intro">
           <div>
@@ -204,6 +257,30 @@ export function AvailabilityLab() {
             <span className="mark-tile__icon" aria-hidden="true"><NeutralDistributionMark distribution="web" /></span>
             <span>Web channel</span>
           </div>
+        </div>
+      </section>
+
+      <section className="brand-boundary" aria-labelledby="brand-boundary-title">
+        <div className="brand-boundary__intro">
+          <p className="eyebrow">Brand boundary</p>
+          <h3 id="brand-boundary-title">Two integration paths.</h3>
+        </div>
+        <div className="brand-boundary__grid">
+          <article>
+            <span className="boundary-label">Neutral component</span>
+            <div className="boundary-demo">
+              <Availability targets={mobileTargets} mode="all" ariaLabel="Neutral platform links" />
+            </div>
+            <p>Use the OSS primitive directly when text plus neutral device semantics are enough.</p>
+          </article>
+          <article>
+            <span className="boundary-label">Owner asset path</span>
+            <div className="official-asset-slot">
+              <strong>Official badge asset</strong>
+              <small>Use intact owner-provided artwork here when required.</small>
+            </div>
+            <p>Do not reconstruct an official badge by combining a vendor logo with the neutral pill.</p>
+          </article>
         </div>
       </section>
     </section>

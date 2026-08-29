@@ -51,6 +51,7 @@ export type AvailabilityProps = {
   region?: string;
   platformHint?: DetectedPlatform;
   className?: string;
+  ariaLabel?: string;
   openInNewTab?: boolean;
   onPlatformResolved?: (platform: DetectedPlatform) => void;
 };
@@ -69,7 +70,7 @@ type AvailabilityRow = {
   label: string;
   detail?: string;
   url: string;
-  ariaLabel: string;
+  ariaLabel?: string;
   customMark?: ReactNode;
   device: DeviceFamily;
   ecosystem: EcosystemId;
@@ -93,7 +94,7 @@ function buildRows(targets: ResolvedTarget[], presentation: AvailabilityPresenta
       targets: [target],
       label: target.label ?? target.platformLabel,
       url: target.url,
-      ariaLabel: target.ariaLabel ?? `Open ${target.platformLabel} download page`,
+      ariaLabel: target.ariaLabel,
       customMark: target.platformMark,
       device: target.device,
       ecosystem: target.ecosystem,
@@ -118,7 +119,7 @@ function buildRows(targets: ResolvedTarget[], presentation: AvailabilityPresenta
       label: first.distributionLabel,
       detail: platforms.join(" · "),
       url: first.url,
-      ariaLabel: first.ariaLabel ?? `Open ${first.distributionLabel} for ${platforms.join(", ")}`,
+      ariaLabel: first.ariaLabel,
       customMark: group.find((target) => target.distributionMark)?.distributionMark,
       device: first.device,
       ecosystem: getDistributionDefinition(first.distribution).ecosystem,
@@ -154,6 +155,7 @@ export function Availability({
   region,
   platformHint,
   className,
+  ariaLabel,
   openInNewTab = false,
   onPlatformResolved,
 }: AvailabilityProps) {
@@ -276,7 +278,7 @@ export function Availability({
     }
 
     return (
-      <div className={classes} {...dataProps}>
+      <div className={classes} role={ariaLabel ? "group" : undefined} aria-label={ariaLabel} {...dataProps}>
         {[...grouped.entries()].map(([label, group]) => (
           <section className="availability-group" key={label}>
             <h3>{label}</h3>
@@ -288,7 +290,7 @@ export function Availability({
   }
 
   return (
-    <div className={classes} {...dataProps}>
+    <div className={classes} role={ariaLabel ? "group" : undefined} aria-label={ariaLabel} {...dataProps}>
       <div className="availability-list">{rows.map(renderRow)}</div>
     </div>
   );
