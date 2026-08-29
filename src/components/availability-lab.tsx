@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import {
   Availability,
+  type AvailabilityGroupBy,
   type AvailabilityMarkContext,
   type AvailabilityMarkStrategy,
   type AvailabilityMode,
@@ -30,7 +31,7 @@ const demoTargets: AvailabilityTarget[] = [
 ];
 
 function DemoCustomMark({ presentation }: AvailabilityMarkContext) {
-  return presentation === "store" ? (
+  return presentation === "distribution" ? (
     <svg viewBox="0 0 24 24" role="presentation">
       <rect x="4" y="4" width="16" height="16" rx="5" fill="none" stroke="currentColor" strokeWidth="1.7" />
       <path d="M8 12h8" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
@@ -46,13 +47,14 @@ export function AvailabilityLab() {
   const [theme, setTheme] = useState<AvailabilityTheme>("auto");
   const [mode, setMode] = useState<AvailabilityMode>("adaptive");
   const [presentation, setPresentation] = useState<AvailabilityPresentation>("platform");
+  const [groupBy, setGroupBy] = useState<AvailabilityGroupBy | "none">("none");
   const [markStrategy, setMarkStrategy] = useState<AvailabilityMarkStrategy>("neutral");
   const [region, setRegion] = useState<"all" | "CN">("all");
   const [resolved, setResolved] = useState<DetectedPlatform>("unknown");
 
   const snippet = useMemo(
-    () => `<Availability\n  targets={targets}\n  theme=\"${theme}\"\n  mode=\"${mode}\"\n  presentation=\"${presentation}\"\n  markStrategy=\"${markStrategy}\"${region === "CN" ? '\n  region="CN"' : ""}\n/>`,
-    [markStrategy, mode, presentation, region, theme],
+    () => `<Availability\n  targets={targets}\n  theme=\"${theme}\"\n  mode=\"${mode}\"\n  presentation=\"${presentation}\"${groupBy !== "none" ? `\n  groupBy=\"${groupBy}\"` : ""}\n  markStrategy=\"${markStrategy}\"${region === "CN" ? '\n  region="CN"' : ""}\n/>`,
+    [groupBy, markStrategy, mode, presentation, region, theme],
   );
 
   async function copySnippet() {
@@ -64,14 +66,14 @@ export function AvailabilityLab() {
       <div className="lab__intro">
         <p className="eyebrow">01 · Availability</p>
         <h2>Every platform. One primitive.</h2>
-        <p>Model devices, operating systems, stores, and regions separately, then choose whether the UI adapts to the current device or advertises the full surface area.</p>
+        <p>Model devices, operating systems, distribution channels, and regions separately, then choose whether the UI adapts to the current device or advertises the full surface area.</p>
       </div>
 
       <div className="lab__grid">
         <div className={`preview preview--${theme}`}>
           <div className="preview__chrome">
             <span>Preview</span>
-            <span>{presentation} · {mode} · {markStrategy}</span>
+            <span>{presentation} · {mode} · {groupBy} · {markStrategy}</span>
           </div>
           <div className="preview__stage preview__stage--availability">
             <Availability
@@ -79,6 +81,7 @@ export function AvailabilityLab() {
               theme={theme}
               mode={mode}
               presentation={presentation}
+              groupBy={groupBy === "none" ? undefined : groupBy}
               markStrategy={markStrategy}
               renderMark={DemoCustomMark}
               region={region === "all" ? undefined : region}
@@ -99,8 +102,8 @@ export function AvailabilityLab() {
 
           <fieldset>
             <legend>Mode</legend>
-            <div className="segmented segmented--wrap">
-              {(["adaptive", "all", "current", "grouped"] as const).map((value) => (
+            <div className="segmented">
+              {(["adaptive", "all", "current"] as const).map((value) => (
                 <button key={value} type="button" aria-pressed={mode === value} onClick={() => setMode(value)}>{value}</button>
               ))}
             </div>
@@ -109,8 +112,17 @@ export function AvailabilityLab() {
           <fieldset>
             <legend>Presentation</legend>
             <div className="segmented segmented--two">
-              {(["platform", "store"] as const).map((value) => (
+              {(["platform", "distribution"] as const).map((value) => (
                 <button key={value} type="button" aria-pressed={presentation === value} onClick={() => setPresentation(value)}>{value}</button>
+              ))}
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Grouping</legend>
+            <div className="segmented segmented--wrap">
+              {(["none", "ecosystem", "device", "distribution"] as const).map((value) => (
+                <button key={value} type="button" aria-pressed={groupBy === value} onClick={() => setGroupBy(value)}>{value}</button>
               ))}
             </div>
           </fieldset>
@@ -136,7 +148,7 @@ export function AvailabilityLab() {
           <div className="rule-card">
             <span>Resolved platform</span>
             <strong>{resolved}</strong>
-            <small>Detection is best-effort. SSR hosts can pass initialPlatform for authoritative hints.</small>
+            <small>Detection is best-effort. SSR hosts can pass platformHint when they have authoritative request context.</small>
           </div>
         </aside>
       </div>
@@ -147,9 +159,9 @@ export function AvailabilityLab() {
       </div>
 
       <div className="notes">
-        <article><span>A</span><h3>Registry first.</h3><p>Platforms and distribution channels are data, not component branches. Unknown future stores can use custom string IDs without changing the renderer.</p></article>
-        <article><span>B</span><h3>Adapt or announce.</h3><p>Adaptive mode emphasizes the current platform, all mode advertises every supported target, and current mode narrows the CTA when space matters.</p></article>
-        <article><span>C</span><h3>Neutral by default.</h3><p>Device/store glyphs are bundled. Custom marks are an integration hook, not a license or a bundled brand-asset catalog.</p></article>
+        <article><span>A</span><h3>Registry first.</h3><p>Platforms and distribution channels are data, not component branches. Unknown future channels can use custom string IDs without changing the renderer.</p></article>
+        <article><span>B</span><h3>Axes stay independent.</h3><p>Priority mode, platform/distribution presentation, and grouping can be combined instead of overloading one mode with multiple responsibilities.</p></article>
+        <article><span>C</span><h3>Neutral by default.</h3><p>Device/distribution glyphs are bundled. Custom marks are an integration hook, not a license or a bundled brand-asset catalog.</p></article>
       </div>
     </section>
   );

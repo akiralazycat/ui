@@ -4,7 +4,7 @@ export type NeutralDeviceMarkProps = {
   device: DeviceFamily;
 };
 
-export function NeutralStoreMark() {
+export function NeutralDistributionMark() {
   return (
     <svg viewBox="0 0 24 24" role="presentation">
       <path d="M6.5 8.5h11l-.7 10h-9.6l-.7-10Z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />

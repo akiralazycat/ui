@@ -10,11 +10,11 @@ import {
   type PlatformId,
 } from "../lib/availability-registry";
 import { detectPlatform, type DetectedPlatform } from "../lib/platform";
-import { NeutralDeviceMark, NeutralStoreMark } from "./availability-marks";
+import { NeutralDeviceMark, NeutralDistributionMark } from "./availability-marks";
 
 export type AvailabilityTheme = "auto" | "light" | "dark";
-export type AvailabilityMode = "adaptive" | "all" | "current" | "grouped";
-export type AvailabilityPresentation = "platform" | "store";
+export type AvailabilityMode = "adaptive" | "all" | "current";
+export type AvailabilityPresentation = "platform" | "distribution";
 export type AvailabilityGroupBy = "ecosystem" | "device" | "distribution";
 export type AvailabilityMarkStrategy = "neutral" | "custom" | "none";
 
@@ -49,7 +49,7 @@ export type AvailabilityProps = {
   markStrategy?: AvailabilityMarkStrategy;
   renderMark?: (context: AvailabilityMarkContext) => ReactNode;
   region?: string;
-  initialPlatform?: DetectedPlatform;
+  platformHint?: DetectedPlatform;
   className?: string;
   openInNewTab?: boolean;
   onPlatformResolved?: (platform: DetectedPlatform) => void;
@@ -134,7 +134,7 @@ function groupLabel(row: AvailabilityRow, groupBy: AvailabilityGroupBy) {
 }
 
 function fallbackMark(row: AvailabilityRow, presentation: AvailabilityPresentation) {
-  return presentation === "store" ? <NeutralStoreMark /> : <NeutralDeviceMark device={row.device} />;
+  return presentation === "distribution" ? <NeutralDistributionMark /> : <NeutralDeviceMark device={row.device} />;
 }
 
 export function Availability({
@@ -142,21 +142,21 @@ export function Availability({
   theme = "auto",
   mode = "adaptive",
   presentation = "platform",
-  groupBy = "ecosystem",
+  groupBy,
   markStrategy = "neutral",
   renderMark,
   region,
-  initialPlatform,
+  platformHint,
   className,
-  openInNewTab = true,
+  openInNewTab = false,
   onPlatformResolved,
 }: AvailabilityProps) {
-  const [resolvedPlatform, setResolvedPlatform] = useState<DetectedPlatform>(initialPlatform ?? "unknown");
-  const [ready, setReady] = useState(initialPlatform !== undefined);
+  const [resolvedPlatform, setResolvedPlatform] = useState<DetectedPlatform>(platformHint ?? "unknown");
+  const [ready, setReady] = useState(platformHint !== undefined);
 
   useEffect(() => {
-    if (initialPlatform !== undefined) {
-      setResolvedPlatform(initialPlatform);
+    if (platformHint !== undefined) {
+      setResolvedPlatform(platformHint);
       setReady(true);
       return;
     }
@@ -164,7 +164,7 @@ export function Availability({
     const detected = detectPlatform();
     setResolvedPlatform(detected);
     setReady(true);
-  }, [initialPlatform]);
+  }, [platformHint]);
 
   useEffect(() => {
     if (ready) onPlatformResolved?.(resolvedPlatform);
@@ -195,7 +195,7 @@ export function Availability({
   }
 
   function rowState(row: AvailabilityRow): "primary" | "secondary" | "hidden" {
-    if (mode === "all" || mode === "grouped") return "primary";
+    if (mode === "all") return "primary";
     if (!ready || resolvedPlatform === "unknown") return "primary";
     const matches = rowMatchesResolved(row);
     if (mode === "current") return matches ? "primary" : "hidden";
@@ -248,7 +248,17 @@ export function Availability({
 
   if (!rows.length) return null;
 
-  if (mode === "grouped") {
+  const dataProps = {
+    "data-theme": theme,
+    "data-mode": mode,
+    "data-presentation": presentation,
+    "data-group-by": groupBy ?? "none",
+    "data-mark-strategy": markStrategy,
+    "data-ready": ready ? "true" : "false",
+    "data-resolved-platform": resolvedPlatform,
+  } as const;
+
+  if (groupBy) {
     const grouped = new Map<string, AvailabilityRow[]>();
     for (const row of rows) {
       const label = groupLabel(row, groupBy);
@@ -258,7 +268,7 @@ export function Availability({
     }
 
     return (
-      <div className={classes} data-theme={theme} data-mode={mode} data-presentation={presentation} data-mark-strategy={markStrategy} data-ready={ready ? "true" : "false"} data-resolved-platform={resolvedPlatform}>
+      <div className={classes} {...dataProps}>
         {[...grouped.entries()].map(([label, group]) => (
           <section className="availability-group" key={label}>
             <h3>{label}</h3>
@@ -270,7 +280,7 @@ export function Availability({
   }
 
   return (
-    <div className={classes} data-theme={theme} data-mode={mode} data-presentation={presentation} data-mark-strategy={markStrategy} data-ready={ready ? "true" : "false"} data-resolved-platform={resolvedPlatform}>
+    <div className={classes} {...dataProps}>
       <div className="availability-list">{rows.map(renderRow)}</div>
     </div>
   );

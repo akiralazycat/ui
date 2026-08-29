@@ -109,7 +109,7 @@
 }
 
 @media (max-width: 540px) {
-  .availability[data-mode="grouped"] { width: 100%; }
+  .availability:not([data-group-by="none"]) { width: 100%; }
   .availability-group { width: 100%; }
   .availability-group .availability-list { align-items: flex-start; }
 }

@@ -10,7 +10,7 @@ export type {
   AvailabilityTheme,
 } from "./components/availability";
 
-export { NeutralDeviceMark, NeutralStoreMark } from "./components/availability-marks";
+export { NeutralDeviceMark, NeutralDistributionMark } from "./components/availability-marks";
 export type { NeutralDeviceMarkProps } from "./components/availability-marks";
 
 export { StoreLinks } from "./components/store-links";

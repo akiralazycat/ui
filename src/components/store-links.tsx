@@ -20,14 +20,17 @@ export type StoreLinksProps = {
   mode?: AvailabilityMode;
   presentation?: AvailabilityPresentation;
   markStrategy?: AvailabilityMarkStrategy;
-  initialPlatform?: DetectedPlatform;
+  platformHint?: DetectedPlatform;
   iosLabel?: string;
   androidLabel?: string;
   iosAriaLabel?: string;
   androidAriaLabel?: string;
   iosMark?: ReactNode;
   androidMark?: ReactNode;
+  appStoreMark?: ReactNode;
+  googlePlayMark?: ReactNode;
   className?: string;
+  openInNewTab?: boolean;
   onPlatformResolved?: (platform: DetectedPlatform) => void;
 };
 
@@ -39,14 +42,17 @@ export function StoreLinks({
   mode = "adaptive",
   presentation = "platform",
   markStrategy,
-  initialPlatform,
+  platformHint,
   iosLabel = "iOS",
   androidLabel = "Android",
   iosAriaLabel = "Open iOS app download page",
   androidAriaLabel = "Open Android app download page",
   iosMark,
   androidMark,
+  appStoreMark,
+  googlePlayMark,
   className,
+  openInNewTab = false,
   onPlatformResolved,
 }: StoreLinksProps) {
   const targets: AvailabilityTarget[] = [];
@@ -59,7 +65,7 @@ export function StoreLinks({
       label: iosLabel,
       ariaLabel: iosAriaLabel,
       platformMark: iosMark,
-      distributionMark: iosMark,
+      distributionMark: appStoreMark,
     });
   }
 
@@ -71,12 +77,13 @@ export function StoreLinks({
       label: androidLabel,
       ariaLabel: androidAriaLabel,
       platformMark: androidMark,
-      distributionMark: androidMark,
+      distributionMark: googlePlayMark,
     });
   }
 
   const effectiveMode = platform === "all" ? "all" : platform === "auto" ? mode : "all";
-  const effectiveMarkStrategy = markStrategy ?? (iosMark || androidMark ? "custom" : "neutral");
+  const hasCustomMark = iosMark || androidMark || appStoreMark || googlePlayMark;
+  const effectiveMarkStrategy = markStrategy ?? (hasCustomMark ? "custom" : "neutral");
 
   return (
     <Availability
@@ -85,8 +92,9 @@ export function StoreLinks({
       mode={effectiveMode}
       presentation={presentation}
       markStrategy={effectiveMarkStrategy}
-      initialPlatform={initialPlatform}
+      platformHint={platformHint}
       className={["store-links", className].filter(Boolean).join(" ")}
+      openInNewTab={openInNewTab}
       onPlatformResolved={onPlatformResolved}
     />
   );
