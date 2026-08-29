@@ -44,10 +44,10 @@
 
 .availability-link {
   min-height: 52px;
-  padding: 0 21px 0 17px;
+  padding: 0 20px 0 16px;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 7px;
   border-radius: 999px;
   background: var(--availability-bg);
   color: var(--availability-fg);
