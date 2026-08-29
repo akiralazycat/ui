@@ -1,0 +1,119 @@
+.availability {
+  --availability-bg: #11110f;
+  --availability-fg: #fff;
+  --availability-surface-fg: #11110f;
+  max-width: 100%;
+}
+
+.availability[data-theme="light"] {
+  --availability-bg: #11110f;
+  --availability-fg: #fff;
+  --availability-surface-fg: #11110f;
+}
+
+.availability[data-theme="dark"] {
+  --availability-bg: #fff;
+  --availability-fg: #11110f;
+  --availability-surface-fg: #f7f7f3;
+}
+
+@media (prefers-color-scheme: dark) {
+  .availability[data-theme="auto"] {
+    --availability-bg: #fff;
+    --availability-fg: #11110f;
+    --availability-surface-fg: #f7f7f3;
+  }
+}
+
+.availability-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.availability-group + .availability-group { margin-top: 18px; }
+.availability-group h3 {
+  margin: 0 0 9px;
+  color: var(--availability-surface-fg);
+  opacity: .58;
+  font: 650 11px/1.2 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", sans-serif;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.availability-link {
+  min-height: 52px;
+  padding: 0 20px 0 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 999px;
+  background: var(--availability-bg);
+  color: var(--availability-fg);
+  font: 550 16px/1 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", sans-serif;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  transition: transform 150ms ease, opacity 150ms ease, background 150ms ease, color 150ms ease;
+}
+
+.availability-link__copy {
+  display: grid;
+  gap: 3px;
+}
+
+.availability-link__copy small {
+  font-size: 10.5px;
+  line-height: 1.15;
+  font-weight: 500;
+  letter-spacing: 0;
+  opacity: .64;
+}
+
+.availability-link[data-priority="secondary"] {
+  min-height: 44px;
+  padding-inline: 8px;
+  background: transparent;
+  color: var(--availability-surface-fg);
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.availability-link[data-priority="secondary"] .availability-link__mark,
+.availability-link[data-priority="secondary"] .availability-link__copy small {
+  display: none;
+}
+
+.availability-link[data-priority="hidden"] { display: none; }
+
+.availability-link:hover { transform: translateY(-1px); }
+.availability-link[data-priority="secondary"]:hover { opacity: 1; }
+.availability-link:active { transform: translateY(0) scale(0.98); }
+.availability-link:focus-visible {
+  outline: 3px solid color-mix(in srgb, currentColor 42%, transparent);
+  outline-offset: 4px;
+}
+
+.availability-link__mark {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+.availability-link__mark svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+@media (max-width: 540px) {
+  .availability:not([data-group-by="none"]) { width: 100%; }
+  .availability-group { width: 100%; }
+  .availability-group .availability-list { align-items: flex-start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .availability-link { transition: none; }
+}
