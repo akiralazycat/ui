@@ -9,6 +9,8 @@ import {
   type AvailabilityTarget,
   type AvailabilityTheme,
 } from "./availability";
+import { NeutralDeviceMark, NeutralDistributionMark } from "./availability-marks";
+import type { DeviceFamily } from "../lib/availability-registry";
 import type { DetectedPlatform } from "../lib/platform";
 
 const appleUniversal = "https://apps.apple.com/";
@@ -28,6 +30,17 @@ const demoTargets: AvailabilityTarget[] = [
   { platform: "linux", distribution: "flathub", url: "https://flathub.org/" },
   { platform: "harmonyos", distribution: "appgallery", url: "https://appgallery.huawei.com/", regions: ["CN"] },
   { platform: "web", distribution: "web", url: "https://example.com/app" },
+];
+
+const deviceSamples: readonly { device: DeviceFamily; label: string }[] = [
+  { device: "phone", label: "Phone" },
+  { device: "tablet", label: "Tablet" },
+  { device: "desktop", label: "Desktop" },
+  { device: "watch", label: "Watch" },
+  { device: "tv", label: "TV" },
+  { device: "spatial", label: "Spatial" },
+  { device: "car", label: "Car" },
+  { device: "web", label: "Web" },
 ];
 
 function DemoCustomMark({ presentation }: AvailabilityMarkContext) {
@@ -163,6 +176,36 @@ export function AvailabilityLab() {
         <article><span>B</span><h3>Axes stay independent.</h3><p>Priority mode, platform/distribution presentation, and grouping can be combined instead of overloading one mode with multiple responsibilities.</p></article>
         <article><span>C</span><h3>Neutral by default.</h3><p>Device/distribution glyphs are bundled. Custom marks are an integration hook, not a license or a bundled brand-asset catalog.</p></article>
       </div>
+
+      <section className="mark-lab" aria-labelledby="mark-lab-title">
+        <div className="mark-lab__intro">
+          <div>
+            <p className="eyebrow">Neutral mark set</p>
+            <h3 id="mark-lab-title">One optical language.</h3>
+          </div>
+          <p>24 × 24 viewBox, restrained monoline geometry, and device semantics rather than vendor identity.</p>
+        </div>
+        <div className="mark-grid">
+          {deviceSamples.map(({ device, label }) => (
+            <div className="mark-tile" key={device}>
+              <span className="mark-tile__icon" aria-hidden="true"><NeutralDeviceMark device={device} /></span>
+              <span>{label}</span>
+            </div>
+          ))}
+          <div className="mark-tile">
+            <span className="mark-tile__icon" aria-hidden="true"><NeutralDistributionMark distribution="app-store" /></span>
+            <span>Store</span>
+          </div>
+          <div className="mark-tile">
+            <span className="mark-tile__icon" aria-hidden="true"><NeutralDistributionMark distribution="direct" /></span>
+            <span>Direct</span>
+          </div>
+          <div className="mark-tile">
+            <span className="mark-tile__icon" aria-hidden="true"><NeutralDistributionMark distribution="web" /></span>
+            <span>Web channel</span>
+          </div>
+        </div>
+      </section>
     </section>
   );
 }

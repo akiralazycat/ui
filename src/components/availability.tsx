@@ -127,14 +127,20 @@ function buildRows(targets: ResolvedTarget[], presentation: AvailabilityPresenta
   });
 }
 
-function groupLabel(row: AvailabilityRow, groupBy: AvailabilityGroupBy) {
-  if (groupBy === "device") return getDeviceLabel(row.device);
-  if (groupBy === "distribution") return getDistributionDefinition(row.distribution).label;
-  return getEcosystemLabel(row.ecosystem);
+function groupLabels(row: AvailabilityRow, groupBy: AvailabilityGroupBy) {
+  if (groupBy === "device") {
+    return unique(row.targets.map((target) => getDeviceLabel(target.device)));
+  }
+  if (groupBy === "distribution") {
+    return [getDistributionDefinition(row.distribution).label];
+  }
+  return unique(row.targets.map((target) => getEcosystemLabel(target.ecosystem)));
 }
 
 function fallbackMark(row: AvailabilityRow, presentation: AvailabilityPresentation) {
-  return presentation === "distribution" ? <NeutralDistributionMark /> : <NeutralDeviceMark device={row.device} />;
+  return presentation === "distribution"
+    ? <NeutralDistributionMark distribution={row.distribution} />
+    : <NeutralDeviceMark device={row.device} />;
 }
 
 export function Availability({
@@ -261,10 +267,12 @@ export function Availability({
   if (groupBy) {
     const grouped = new Map<string, AvailabilityRow[]>();
     for (const row of rows) {
-      const label = groupLabel(row, groupBy);
-      const group = grouped.get(label) ?? [];
-      group.push(row);
-      grouped.set(label, group);
+      if (rowState(row) === "hidden") continue;
+      for (const label of groupLabels(row, groupBy)) {
+        const group = grouped.get(label) ?? [];
+        group.push(row);
+        grouped.set(label, group);
+      }
     }
 
     return (

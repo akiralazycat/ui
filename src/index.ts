@@ -11,7 +11,7 @@ export type {
 } from "./components/availability";
 
 export { NeutralDeviceMark, NeutralDistributionMark } from "./components/availability-marks";
-export type { NeutralDeviceMarkProps } from "./components/availability-marks";
+export type { NeutralDeviceMarkProps, NeutralDistributionMarkProps } from "./components/availability-marks";
 
 export { StoreLinks } from "./components/store-links";
 export type { StoreLinksPlatform, StoreLinksProps, StoreLinksTheme } from "./components/store-links";

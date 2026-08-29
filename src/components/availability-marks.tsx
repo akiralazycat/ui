@@ -1,16 +1,50 @@
-import type { DeviceFamily } from "../lib/availability-registry";
+import type { DeviceFamily, DistributionId } from "../lib/availability-registry";
 
 export type NeutralDeviceMarkProps = {
   device: DeviceFamily;
 };
 
-export function NeutralDistributionMark() {
+export type NeutralDistributionMarkProps = {
+  distribution?: DistributionId;
+};
+
+function BrowserWindowMark() {
   return (
-    <svg viewBox="0 0 24 24" role="presentation">
-      <path d="M6.5 8.5h11l-.7 10h-9.6l-.7-10Z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-      <path d="M9.2 8.5V7a2.8 2.8 0 0 1 5.6 0v1.5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-    </svg>
+    <>
+      <rect x="3.4" y="4.3" width="17.2" height="15.4" rx="2" fill="none" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M3.4 8.2h17.2" fill="none" stroke="currentColor" strokeWidth="1.7" />
+      <circle cx="6.2" cy="6.25" r=".65" fill="currentColor" />
+      <circle cx="8.6" cy="6.25" r=".65" fill="currentColor" />
+    </>
   );
+}
+
+export function NeutralDistributionMark({ distribution }: NeutralDistributionMarkProps) {
+  const shape = (() => {
+    if (distribution === "direct") {
+      return (
+        <path
+          d="M12 4.2v10M8.5 11.2 12 14.7l3.5-3.5M5 18.5h14"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      );
+    }
+
+    if (distribution === "web") return <BrowserWindowMark />;
+
+    return (
+      <>
+        <path d="M6.4 8.6h11.2l-.8 10H7.2l-.8-10Z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+        <path d="M9.2 8.6V7a2.8 2.8 0 0 1 5.6 0v1.6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      </>
+    );
+  })();
+
+  return <svg viewBox="0 0 24 24" role="presentation">{shape}</svg>;
 }
 
 export function NeutralDeviceMark({ device }: NeutralDeviceMarkProps) {
@@ -19,56 +53,42 @@ export function NeutralDeviceMark({ device }: NeutralDeviceMarkProps) {
       case "watch":
         return (
           <>
-            <rect x="7.7" y="6.6" width="8.6" height="10.8" rx="2.4" fill="none" stroke="currentColor" strokeWidth="1.7" />
-            <path d="M10 3.5h4l.8 3.1H9.2L10 3.5Zm0 17h4l.8-3.1H9.2l.8 3.1Z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+            <rect x="7.2" y="6.1" width="9.6" height="11.8" rx="2.5" fill="none" stroke="currentColor" strokeWidth="1.7" />
+            <path d="M9.8 3.3h4.4l.7 2.8H9.1l.7-2.8Zm0 17.4h4.4l.7-2.8H9.1l.7 2.8Z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
           </>
         );
       case "tv":
         return (
           <>
-            <rect x="3.5" y="5.5" width="17" height="11" rx="2" fill="none" stroke="currentColor" strokeWidth="1.7" />
-            <path d="M9 20h6M12 16.5V20" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+            <rect x="2.8" y="5.7" width="18.4" height="11.2" rx="1.9" fill="none" stroke="currentColor" strokeWidth="1.7" />
+            <path d="M7 20 8.3 16.9M17 20l-1.3-3.1" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
           </>
         );
       case "desktop":
         return (
           <>
-            <rect x="3.5" y="4.5" width="17" height="11.5" rx="1.8" fill="none" stroke="currentColor" strokeWidth="1.7" />
-            <path d="M8.5 20h7M12 16v4" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+            <rect x="3.3" y="4.4" width="17.4" height="11.6" rx="1.8" fill="none" stroke="currentColor" strokeWidth="1.7" />
+            <path d="M8.4 20h7.2M12 16v4" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
           </>
         );
       case "tablet":
-        return (
-          <>
-            <rect x="5.5" y="2.8" width="13" height="18.4" rx="2.2" fill="none" stroke="currentColor" strokeWidth="1.7" />
-            <circle cx="12" cy="18" r=".8" fill="currentColor" />
-          </>
-        );
+        return <rect x="5.25" y="3.1" width="13.5" height="17.8" rx="2.1" fill="none" stroke="currentColor" strokeWidth="1.7" />;
       case "spatial":
-        return <path d="M3.5 12c.7-3.2 2.4-5 5.2-5h6.6c2.8 0 4.5 1.8 5.2 5-.5 3.1-2 4.8-4.4 4.8-1.9 0-2.9-.9-4.1-2.2-1.2 1.3-2.2 2.2-4.1 2.2-2.4 0-3.9-1.7-4.4-4.8Z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />;
+        return <path d="M3.4 11.5c.6-2.9 2.3-4.5 5-4.5h7.2c2.7 0 4.4 1.6 5 4.5l-.5 2.4c-.4 1.9-1.7 3-3.7 3-1.8 0-2.8-.8-4.4-2.5-1.6 1.7-2.6 2.5-4.4 2.5-2 0-3.3-1.1-3.7-3l-.5-2.4Z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />;
       case "car":
         return (
           <>
-            <path d="M5 14.5 6.5 9h11l1.5 5.5v3H5v-3Z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-            <circle cx="8" cy="18" r="1.4" fill="none" stroke="currentColor" strokeWidth="1.5" />
-            <circle cx="16" cy="18" r="1.4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+            <path d="M4.2 14.2 6.2 8h11.6l2 6.2v3.2H4.2v-3.2Z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+            <path d="M7 8l1.2-2h7.6L17 8" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            <circle cx="7.7" cy="18" r="1.5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+            <circle cx="16.3" cy="18" r="1.5" fill="none" stroke="currentColor" strokeWidth="1.5" />
           </>
         );
       case "web":
-        return (
-          <>
-            <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" strokeWidth="1.7" />
-            <path d="M3.8 12h16.4M12 3.5c2.2 2.4 3.3 5.2 3.3 8.5S14.2 18.1 12 20.5C9.8 18.1 8.7 15.3 8.7 12S9.8 5.9 12 3.5Z" fill="none" stroke="currentColor" strokeWidth="1.5" />
-          </>
-        );
+        return <BrowserWindowMark />;
       case "phone":
       default:
-        return (
-          <>
-            <rect x="7" y="2.8" width="10" height="18.4" rx="2.4" fill="none" stroke="currentColor" strokeWidth="1.7" />
-            <circle cx="12" cy="18" r=".8" fill="currentColor" />
-          </>
-        );
+        return <rect x="7" y="2.8" width="10" height="18.4" rx="2.5" fill="none" stroke="currentColor" strokeWidth="1.7" />;
     }
   })();
 
