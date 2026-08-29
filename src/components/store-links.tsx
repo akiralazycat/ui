@@ -49,30 +49,31 @@ export function StoreLinks({
   className,
   onPlatformResolved,
 }: StoreLinksProps) {
-  const targets: AvailabilityTarget[] = [
-    iosUrl && platform !== "android"
-      ? {
-          platform: "ios",
-          distribution: "app-store",
-          url: iosUrl,
-          label: iosLabel,
-          ariaLabel: iosAriaLabel,
-          platformMark: iosMark,
-          distributionMark: iosMark,
-        }
-      : null,
-    androidUrl && platform !== "ios"
-      ? {
-          platform: "android",
-          distribution: "google-play",
-          url: androidUrl,
-          label: androidLabel,
-          ariaLabel: androidAriaLabel,
-          platformMark: androidMark,
-          distributionMark: androidMark,
-        }
-      : null,
-  ].filter((target): target is AvailabilityTarget => target !== null);
+  const targets: AvailabilityTarget[] = [];
+
+  if (iosUrl && platform !== "android") {
+    targets.push({
+      platform: "ios",
+      distribution: "app-store",
+      url: iosUrl,
+      label: iosLabel,
+      ariaLabel: iosAriaLabel,
+      platformMark: iosMark,
+      distributionMark: iosMark,
+    });
+  }
+
+  if (androidUrl && platform !== "ios") {
+    targets.push({
+      platform: "android",
+      distribution: "google-play",
+      url: androidUrl,
+      label: androidLabel,
+      ariaLabel: androidAriaLabel,
+      platformMark: androidMark,
+      distributionMark: androidMark,
+    });
+  }
 
   const effectiveMode = platform === "all" ? "all" : platform === "auto" ? mode : "all";
   const effectiveMarkStrategy = markStrategy ?? (iosMark || androidMark ? "custom" : "neutral");
