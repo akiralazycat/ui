@@ -53,16 +53,20 @@ This project does not bundle Apple or Google logos or store badges. Those marks 
 ## Local development
 
 ```bash
-npm install
+npm install --no-package-lock
 npm run dev
 ```
 
 ## Validation
 
+Use Node.js 22. `npm run build` includes the TypeScript check, and `npm run typecheck` runs it independently.
+
 ```bash
 npm run typecheck
 npm run build
 ```
+
+For Store Links changes, use the demo to verify visible labels, keyboard focus, and the relevant platform-specific link. See [the rendering contract](#rendering-contract).
 
 ## License
 
